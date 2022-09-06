@@ -1,0 +1,521 @@
+PATCH api/v1/user/update 	
+  - REQUEST
+    - req.body
+      - { status : 1/0 } *1-Blocked , 0-Unblocked
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : Success Update Data
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+PATCH api/v1/auth/changeBiometric/update 	
+  - REQUEST
+    - req.body
+      - { biometric : true/false } *true[1],false[0]
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : Success Change Biometric Login State
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+POST api/v1/auth/forgotPin/validatePassword 	
+  - REQUEST
+    - req.body
+      - { password : string }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : Success Validate Password, continue to next process
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Invalid Password
+        - Invalid Password 3 Times, Account Blocked
+
+POST api/v1/auth/forgotPin/validateNewPin 
+  - REQUEST
+    - req.body
+      - { newPin : int, newPinConfirmation : int }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : newPin and newPinConfirmation Match, continue to next process
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - New PIN doesn't match with New PIN Confirmation
+
+PATCH api/v1/auth/changePin/update 	
+  - REQUEST
+    - req.body
+      - { newPin : int }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : Success Change Pin
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+POST api/v1/auth/changePin/validate 
+  - REQUEST
+    - req.body
+      - { oldPin : int, newPin : int, newPinConfirmation : int }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : Success Generate OTP, sent OTP to Destination
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Invalid PIN
+        - Invalid PIN 3 Times, Account Blocked
+        - New PIN doesn't match with New PIN Confirmation
+
+PATCH api/v1/auth/changePassword/update 
+  - REQUEST
+    - req.body
+      - { newPassword : String }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : Success Change Password
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+POST api/v1/auth/changePassword/validate 
+  - REQUEST
+    - req.body
+      - { oldPassword : String, newPassword : String, newPasswordConfirmation : String }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { passwordValid : true; }
+      - description : Success Validate Password, Continue to next Process
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Invalid Password
+        - Invalid Password 3 Times, Account Blocked
+        - New Password doesn't match with New Password Confirmation
+
+POST api/v1/auth/forgotPassword/linkValidate 
+  - REQUEST
+    - req.body
+      - { linkUrl : String, hashKey : hashedTimestamp }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : Success Validate Link, Continue to next Process
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Link is Invalid or already Expired
+
+POST api/v1/auth/forgotPassword/validate 
+  - REQUEST
+    - req.body
+      - { newPassword : String, newPasswordConfirmation : String }
+    - req.headers
+	- { token : String jwt token } *from Link
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : Success Change Password
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - New Password doesn't match with New Password Confirmation
+
+
+POST api/v1/auth/pin/set 
+  - REQUEST
+    - req.body
+      - { newPin : int, newPinConfirmation : int }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { pinValid : true; }
+      - description : Success Set PIN
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+POST api/v1/auth/pin/validate 
+  - REQUEST
+    - req.body
+      - { pin : String }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { pinValid : true; }
+      - description : Success Validate PIN, Execute Transaction
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+POST api/v1/auth/otp/generate 	
+  - REQUEST
+    - req.body
+      - { Email/PhoneNumber : String, Date & Time : timestamp }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { otpValid : true; }
+      - description : Success Generate OTP, sent OTP to Destination
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+POST api/v1/auth/otp/validate 
+  - REQUEST
+    - req.body
+      - { otp : String }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { otpValid : true; }
+      - description : Authentication Success, continue to next step
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Invalid OTP
+
+
+POST api/v1/users/register/prepareForm 	
+  - REQUEST
+    - req.body
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { termsAndCondition : String }
+      - description : get Latest Terms and Condition
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+
+POST api/v1/users/register/submitRegister
+  - REQUEST
+    - req.body
+      - { name: String, email/PhoneNumber: String, password: String, ktpPicture :base64, profilePicture: base64, selfiePicture : base64 }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { _id: ObjectId, name: String, email: String, password: String (hashed), picture: String }
+      - description : register new account
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - email format is invalid
+        - password length is less than $passwordMinimumLength characters
+        - password length is more than $passwordMaximumLength characters
+        - email already already registered
+        - phone number already registered
+
+POST api/v1/users/login/validate 	
+  - REQUEST
+    - req.body
+      - { email/phoneNumber: String, Password : String }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { token: String, user: { _userID, name, gender } }
+      - description : login to existing account
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Credential Invalid
+        - the required filled is not filled
+        - Account Blocked
+        - password length is less than $passwordMinimumLength characters
+        - password length is more than $passwordMaximumLength characters
+
+
+- POST api/v1/users/login/biometric 	
+  - REQUEST
+    - req.body
+      - { deviceId: String }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { user: { _id, biometricLogin } }
+      - description : biometric login enabled
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - biometric login not enabled
+
+POST api/v1/users/login/status		
+  - REQUEST
+    - req.body
+      - { userId: objectId, loginWith: $loginMethod }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { token: String, user: { _userID, name, gender } }
+      - description : login to existing account
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - password or email that is inputted is wrong
+        - the required filled is not filled
+        - password length is less than 8 characters
+        - password length is more than 16 characters
+        - email already used on other registered account
+        - the required field is not filled
+
+
+POST api/v1/users/login/forgotPassword 		
+  - REQUEST
+    - req.body
+      - { email/PhoneNumber : String }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { email/PhoneNumber : String }
+      - description : Forgot Password Link sent to registered Email/PhoneNumber
+	- Partially Sent to Notification Service - Notification Forgot password
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Invalid Email/Phone Number
+
+
+POST api/v1/loan/getLoanHistory 		
+  - REQUEST
+    - req.body
+      - { user : { _id }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { loanHistory : { productID, amount, tenor, interest, installment, status, dueDate, outstandingAmount, penalty, disbursementAccount} }
+      - description : get all Loan History for one user
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - User Doesn't have Loan History
+
+GET api/v1/loan/products  (Used if there is many loan products -> in Catalog Page)
+  - REQUEST
+    - req.body 
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : [ {_id: ObjectId, name:String, picture: String, price: String, description: String, tags: Array } ]
+      - description : get all existing products on the database
+    - ON ERROR
+      - status : 500
+      - body : { message }
+      - description : 
+        - something is wrong within the server
+
+- GET api/v1/loan/products/:id (used if user choose one of product in catalogue - Prepare Form with product detail)
+  - REQUEST
+    - req.body 
+    - req.headers : 
+	- { token : String jwt token }
+    - req.params : id
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : {_id: ObjectId, name:String, picture: String, price: String, description: String, tags: Array }
+      - description : get detail products by Id on the database
+    - ON ERROR
+      - status : 401, 500
+      - body : { message }
+      - description : 
+        - invalid login token (status 401)
+        - something is wrong within the server (status 500)
+
+
+POST api/v1/loan/destinationInquiry 	
+  - REQUEST
+    - req.body
+      - { bankCode : String, accountNumber : String }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { bankName : String, accountNumber : String, recipientName : String }
+      - description : Success destination Account Inquiry - get destination details
+	- Partially Sent to Notification Service - Notification Forgot password
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Invalid Destination Account
+
+
+POST api/v1/loan/products/:id/submitForm 	
+  - REQUEST
+    - req.body
+      - { amount : int, tenor : int, interest : float, bankDestination : String, destinationAccountNumber : String, recipientName : String, tncFlag : true, dateTime : timestamp }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { amount : int, tenor : int, interest : float, bankDestination : String, destinationAccountNumber : String, recipientName : String, 					installment : float, tncFlag : true, dateTime : timestamp }
+      - description : Success Inquiry, Continue to next step
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Bad Request - General Error
+	status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+
+POST api/v1/loan/products/:id/submitLoan	
+  - REQUEST
+    - req.body
+      - { amount : int, tenor : int, interest : float, bankDestination : String, destinationAccountNumber : String, recipientName : String, tncFlag : true, dateTime : timestamp }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { amount : int, tenor : int, interest : float, bankDestination : String, destinationAccountNumber : String, recipientName : String, 					installment : float, tncFlag : true, dateTime : timestamp }
+      - description : Success Inquiry, Continue to next step
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Bad Request - General Error
+	status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
