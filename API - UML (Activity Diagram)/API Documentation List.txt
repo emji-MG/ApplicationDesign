@@ -1,3 +1,129 @@
+USER
+
+POST api/v1/users/register/prepareForm 	
+  - REQUEST
+    - req.body
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { termsAndCondition : String }
+      - description : get Latest Terms and Condition
+    - ON ERROR
+      - status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+
+POST api/v1/users/register/submitRegister
+  - REQUEST
+    - req.body
+      - { name: String, email/PhoneNumber: String, password: String, ktpPicture :base64, profilePicture: base64, selfiePicture : base64 }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { _id: ObjectId, name: String, email: String, password: String (hashed), picture: String }
+      - description : register new account
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - email format is invalid
+        - password length is less than $passwordMinimumLength characters
+        - password length is more than $passwordMaximumLength characters
+        - email already already registered
+        - phone number already registered
+
+POST api/v1/users/login/validate 	
+  - REQUEST
+    - req.body
+      - { email/phoneNumber: String, Password : String }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { token: String, user: { _userID, name, gender } }
+      - description : login to existing account
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Credential Invalid
+        - the required filled is not filled
+        - Account Blocked
+        - password length is less than $passwordMinimumLength characters
+        - password length is more than $passwordMaximumLength characters
+
+
+- POST api/v1/users/login/biometric 	
+  - REQUEST
+    - req.body
+      - { deviceId: String }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { user: { _id, biometricLogin } }
+      - description : biometric login enabled
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - biometric login not enabled
+
+POST api/v1/users/login/status		
+  - REQUEST
+    - req.body
+      - { userId: objectId, loginWith: $loginMethod }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { token: String, user: { _userID, name, gender } }
+      - description : login to existing account
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - password or email that is inputted is wrong
+        - the required filled is not filled
+        - password length is less than 8 characters
+        - password length is more than 16 characters
+        - email already used on other registered account
+        - the required field is not filled
+
+
+POST api/v1/users/login/forgotPassword 		
+  - REQUEST
+    - req.body
+      - { email/PhoneNumber : String }
+    - req.headers
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { email/PhoneNumber : String }
+      - description : Forgot Password Link sent to registered Email/PhoneNumber
+	- Partially Sent to Notification Service - Notification Forgot password
+    - ON ERROR
+      - status : 400
+      - body : { message : String }
+      - description : 
+        - Invalid Email/Phone Number
+
 PATCH api/v1/user/update 	
   - REQUEST
     - req.body
@@ -16,6 +142,14 @@ PATCH api/v1/user/update
       - body : { message : String }
       - description : 
         - Internal Server Error
+
+
+
+
+
+
+
+AUTHENTICATION
 
 PATCH api/v1/auth/changeBiometric/update 	
   - REQUEST
@@ -270,130 +404,9 @@ POST api/v1/auth/otp/validate
         - Invalid OTP
 
 
-POST api/v1/users/register/prepareForm 	
-  - REQUEST
-    - req.body
-    - req.headers
-    - req.params
-    - req.query
-  - RESPONSE
-    - ON SUCCESS
-      - status : 200
-      - body : { termsAndCondition : String }
-      - description : get Latest Terms and Condition
-    - ON ERROR
-      - status : 500
-      - body : { message : String }
-      - description : 
-        - Internal Server Error
 
 
-POST api/v1/users/register/submitRegister
-  - REQUEST
-    - req.body
-      - { name: String, email/PhoneNumber: String, password: String, ktpPicture :base64, profilePicture: base64, selfiePicture : base64 }
-    - req.headers
-    - req.params
-    - req.query
-  - RESPONSE
-    - ON SUCCESS
-      - status : 200
-      - body : { _id: ObjectId, name: String, email: String, password: String (hashed), picture: String }
-      - description : register new account
-    - ON ERROR
-      - status : 400
-      - body : { message : String }
-      - description : 
-        - email format is invalid
-        - password length is less than $passwordMinimumLength characters
-        - password length is more than $passwordMaximumLength characters
-        - email already already registered
-        - phone number already registered
-
-POST api/v1/users/login/validate 	
-  - REQUEST
-    - req.body
-      - { email/phoneNumber: String, Password : String }
-    - req.headers
-    - req.params
-    - req.query
-  - RESPONSE
-    - ON SUCCESS
-      - status : 200
-      - body : { token: String, user: { _userID, name, gender } }
-      - description : login to existing account
-    - ON ERROR
-      - status : 400
-      - body : { message : String }
-      - description : 
-        - Credential Invalid
-        - the required filled is not filled
-        - Account Blocked
-        - password length is less than $passwordMinimumLength characters
-        - password length is more than $passwordMaximumLength characters
-
-
-- POST api/v1/users/login/biometric 	
-  - REQUEST
-    - req.body
-      - { deviceId: String }
-    - req.headers
-    - req.params
-    - req.query
-  - RESPONSE
-    - ON SUCCESS
-      - status : 200
-      - body : { user: { _id, biometricLogin } }
-      - description : biometric login enabled
-    - ON ERROR
-      - status : 400
-      - body : { message : String }
-      - description : 
-        - biometric login not enabled
-
-POST api/v1/users/login/status		
-  - REQUEST
-    - req.body
-      - { userId: objectId, loginWith: $loginMethod }
-    - req.headers
-    - req.params
-    - req.query
-  - RESPONSE
-    - ON SUCCESS
-      - status : 200
-      - body : { token: String, user: { _userID, name, gender } }
-      - description : login to existing account
-    - ON ERROR
-      - status : 400
-      - body : { message : String }
-      - description : 
-        - password or email that is inputted is wrong
-        - the required filled is not filled
-        - password length is less than 8 characters
-        - password length is more than 16 characters
-        - email already used on other registered account
-        - the required field is not filled
-
-
-POST api/v1/users/login/forgotPassword 		
-  - REQUEST
-    - req.body
-      - { email/PhoneNumber : String }
-    - req.headers
-    - req.params
-    - req.query
-  - RESPONSE
-    - ON SUCCESS
-      - status : 200
-      - body : { email/PhoneNumber : String }
-      - description : Forgot Password Link sent to registered Email/PhoneNumber
-	- Partially Sent to Notification Service - Notification Forgot password
-    - ON ERROR
-      - status : 400
-      - body : { message : String }
-      - description : 
-        - Invalid Email/Phone Number
-
+PRODUCT-LOAN
 
 POST api/v1/loan/getLoanHistory 		
   - REQUEST
@@ -515,6 +528,28 @@ POST api/v1/loan/products/:id/submitLoan
       - description : 
         - Bad Request - General Error
 	status : 500
+      - body : { message : String }
+      - description : 
+        - Internal Server Error
+
+
+NOTIFICATION
+
+POST api/v1/notification/ 	
+  - REQUEST
+    - req.body
+      - { category : string }
+    - req.headers
+	- { token : String jwt token }
+    - req.params
+    - req.query
+  - RESPONSE
+    - ON SUCCESS
+      - status : 200
+      - body : { }
+      - description : Success sent Notification
+    - ON ERROR
+      - status : 500
       - body : { message : String }
       - description : 
         - Internal Server Error
